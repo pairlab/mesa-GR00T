@@ -30,6 +30,23 @@ from gr00t.data.utils import (
 import numpy as np
 
 
+def _mesa_joint_reference(reference_state: np.ndarray, action_dim: int) -> np.ndarray:
+    """Reference state for MESA/BiMESA relative joint actions, with gripper dims kept absolute.
+
+    - MESA (Franka): 8-D action (7 joints + gripper) relative to the 7-D `robot0_joint_pos` state;
+      the gripper reference is padded with 0.
+    - BiMESA (2x YAM): 14-D action relative to the 14-D state
+      (robot0 6 joints + gripper | robot1 6 joints + gripper); gripper references (dims 6, 13) are zeroed.
+    The released MESA/BiMESA GR00T checkpoints were trained with this convention.
+    """
+    if action_dim == 8 and reference_state.shape[0] == 7:
+        return np.concatenate([reference_state, [0.0]])
+    if action_dim == 14 and reference_state.shape[0] == 14:
+        reference_state = reference_state.copy()
+        reference_state[[6, 13]] = 0.0
+    return reference_state
+
+
 class StateActionProcessor:
     """
     Unified processor for robot state and action data.
@@ -607,6 +624,7 @@ class StateActionProcessor:
         """Convert absolute action to relative action using reference state."""
         assert action.ndim == 2, f"Expected action shape (T, D), got {action.shape}"
         assert reference_state.ndim == 1, f"Expected state shape (D,), got {reference_state.shape}"
+        reference_state = _mesa_joint_reference(reference_state, action.shape[1])
 
         if action_type == ActionType.EEF:
             assert action.shape[1] == 9, (
@@ -647,6 +665,7 @@ class StateActionProcessor:
         """Convert relative action to absolute action using reference state."""
         assert action.ndim == 2, f"Expected action shape (T, D), got {action.shape}"
         assert reference_state.ndim == 1, f"Expected state shape (D,), got {reference_state.shape}"
+        reference_state = _mesa_joint_reference(reference_state, action.shape[1])
         assert reference_state.shape[0] == action.shape[1], (
             f"State dim {reference_state.shape[0]} != action dim {action.shape[1]}"
         )
