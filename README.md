@@ -25,14 +25,22 @@ uv sync
 ## Serving a checkpoint
 
 MESA and BiMESA GR00T-N1.6 checkpoints are finetuned from `nvidia/GR00T-N1.6-3B` with the `new_embodiment` tag and
-store their modality configuration and normalization statistics in the checkpoint directory. Download a checkpoint
-(links on the [MESA documentation](https://pairlab.github.io/MESA/)) and run:
+store their modality configuration and normalization statistics in the checkpoint directory:
+
+| Checkpoint | Setting |
+|---|---|
+| [albertwilcox/mesa-gr00t-n1.6](https://huggingface.co/albertwilcox/mesa-gr00t-n1.6) | single-arm MESA (trained on MESA-70) |
+| [albertwilcox/bimesa-gr00t-n1.6](https://huggingface.co/albertwilcox/bimesa-gr00t-n1.6) | bimanual BiMESA (trained on BiMESA-57) |
+
+Download a checkpoint and start the policy server:
 
 ```bash
-uv run python gr00t/eval/serve_mesa.py --model-path <checkpoint dir> --port 8001
+uv run huggingface-cli download albertwilcox/bimesa-gr00t-n1.6 --local-dir checkpoints/bimesa-gr00t-n1.6
+uv run python gr00t/eval/serve_mesa.py --model-path checkpoints/bimesa-gr00t-n1.6 --port 8001
 ```
 
-Then, from the MESA repository, run the evaluation server against the same port.
+Then, from the [MESA repository](#), run the evaluation server against the same
+port.
 
 Single-arm MESA (Franka; left-shoulder + wrist cameras; 8-D joint-position state/action):
 
