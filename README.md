@@ -18,7 +18,7 @@ Changes relative to upstream:
 Requires Python 3.10, CUDA 12, and [uv](https://docs.astral.sh/uv/).
 
 ```bash
-git clone <this repo> gr00t-mesa && cd gr00t-mesa
+git clone https://github.com/pairlab/mesa-GR00T.git && cd mesa-GR00T
 uv sync
 ```
 
