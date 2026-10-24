@@ -1,7 +1,7 @@
 #This is the single project pyproject.toml
 
 [build-system]
-requires = ["setuptools>=67", "wheel", "pip"]
+requires = ["setuptools>=84.1.0", "wheel", "pip"]
 build-backend = "setuptools.build_meta"
 
 [project]
