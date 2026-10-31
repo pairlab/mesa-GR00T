@@ -46,7 +46,7 @@ dev = [
     "ipython",
 ]
 tensorrt = [
-    "onnx>=1.20.0",
+    "onnx>=1.22.0",
     "tensorrt>=10.14.1.48.post1",
 ]
 
